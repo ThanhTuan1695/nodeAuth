@@ -38,12 +38,14 @@ router.post('/register',upload.single('image'),function(req, res, next) {
  	
   
  	req.getValidationResult().then(error => {
- 		if (error) {
+ 		console.log(error.array().length);
+ 		if (error.array().length > 0) {
+ 			console.log("msg");
  			res.render('register',{
  				errors: error.array()
  			});
 
- 		}
+ 		}else{
  			var newUser = new User({
  				username:username,
 				password:password,
@@ -53,12 +55,14 @@ router.post('/register',upload.single('image'),function(req, res, next) {
  			});
  			User.createUser(newUser,function (err) {
  				if (err) {
- 					throw err;
- 				}
-
+ 					throw new Error("can not add user");
+ 				}else{
  				res.redirect('/');
+
+ 				}
  			});
- 			return;
+ 		}
+ 		
  	});
 });
 
